@@ -210,3 +210,71 @@ export function FruitsSearch() {
     </div>
   );
 }
+
+//One-Time Password Generator
+//const { useState, useEffect, useRef } = React;
+
+export const OTPGenerator = () => {
+
+  const [pass, setPass] = useState("");
+  const [count, setCount] = useState(null);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  //const [message, setMessage] = useState("");
+  const countRef = useRef();
+
+  const buttonHandler = () => {
+    if (countRef.current) {
+      clearInterval(countRef.current);
+    }
+
+    let digits = [];
+    const numbers = "1234567890";
+    for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * numbers.length);
+      digits.push(numbers[randomIndex])
+    }
+    setPass(digits.join(""));
+    setCount(5);
+    setButtonDisabled(prevDisabled => !prevDisabled);
+
+
+    countRef.current = setInterval(() => {
+      setCount(prevCount => {
+        if (prevCount === 1) {
+          clearInterval(countRef.current);
+          setButtonDisabled(prevDisabled => !prevDisabled)
+          //setMessage("OTP expired. Click the button to generate a new OTP.")
+          return null;
+        }
+        return prevCount - 1;
+      });
+    }, 1000);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (countRef.current) {
+        clearInterval(countRef.current)
+      }
+    }
+  }, [])
+
+  const message = () => {
+    if (!pass) return "";
+    if (count > 0) {
+      return `Expires in: ${count} seconds`;
+    }
+    return "OTP expired. Click the button to generate a new OTP."
+  }
+
+
+  return (
+    <div className="container">
+      <h1 id="otp-title">OTP Generator</h1>
+      <h2 id="otp-display">{pass.length > 0 ? pass : "Click 'Generate OTP' to get a code"}</h2>
+      <p id="otp-timer" aria-live="polite">{message()}
+      </p>
+      <button id="generate-otp-button" onClick={buttonHandler} disabled={buttonDisabled}>Generate OTP</button>
+    </div>
+  )
+};
