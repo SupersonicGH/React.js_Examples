@@ -374,3 +374,93 @@ export const SuperheroForm = () => {
     </div>
   )
 };
+
+//RSVP Form
+//const { useState } = React;
+
+export function EventRSVPForm() {
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [attend, setAttend] = useState('');
+  const [diet, setDiet] = useState('');
+  const [adds, setAdds] = useState(false);
+  const [data, setData] = useState(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    setData({
+      name,
+      email,
+      attend,
+      diet,
+      adds,
+    });
+
+    setAdds(false);
+
+  }
+  return (
+    <div className='form-wrap'>
+      <h1>RSVP Form</h1>
+      <form className='RSVP-Form' onSubmit={handleSubmit}>
+        <label>
+          Name:
+          <input
+            type='text'
+            value={name}
+            onChange={e => setName(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Email:
+          <input
+            type='email'
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Number of Attendees:
+          <input
+            type='number'
+            value={attend}
+            onChange={e => setAttend(e.target.value)}
+            min='1'
+            required
+          />
+        </label>
+        <label>
+          Dietary Preferences:
+          <input
+            type='text'
+            value={diet}
+            onChange={e => setDiet(e.target.value)}
+          />
+        </label>
+        <label>
+          Additional Guests?
+          <input
+            type='checkbox'
+            checked={adds}
+            onChange={e => setAdds(e.target.value)}
+          />
+        </label>
+        <button type='submit'>Submit</button>
+      </form>
+      {data && (
+        <div className='confirm-data'>
+          <h2>RSVP Submitted!</h2>
+          <p>Name: {data.name}</p>
+          <p>Email: {data.email}</p>
+          <p>Number of attendees: {data.attend}</p>
+          <p>Dietary preferences: {data.diet ? data.diet : 'None'}</p>
+          <p>Bringing additional guests: {data.adds ? 'Yes' : 'No'}</p>
+        </div>
+      )}
+    </div>
+  )
+}
